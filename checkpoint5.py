@@ -1,4 +1,6 @@
 import requests
+import oracledb
+from config import DB_USER,DB_PASS,DB_DSN
 from datetime import datetime
 
 URL_BASE = "https://api.coingecko.com/api/v3"
@@ -93,7 +95,16 @@ def transformar_moeda(cotacao,moedas):
     return moedas_tratadas
 
 
+def obter_conexao():
+    try:
+        conexao = oracledb.connect(user=DB_USER, password=DB_PASS, dsn=DB_DSN)
+        return conexao
+    except oracledb.Error as e:
+        print(f"Erro ao conectar com o banco de dados. Erro: {e}")
+        return None
 
+conexao = obter_conexao()
+print(conexao)
 moedas = buscar_moedas()
 cotacao = buscar_cotacao_dolar()
 resultado = transformar_moeda(cotacao,moedas)
