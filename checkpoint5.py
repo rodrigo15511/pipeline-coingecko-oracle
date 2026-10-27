@@ -136,8 +136,34 @@ def criar_tabela():
             conexao.close()
 
 
+def inserir_moedas(moedas_tratadas):
+    sql = """
+INSERT INTO COTACOES_CRIPTO (
+    ID_MOEDA, SIMBOLO, NOME, PRECO_USD, PRECO_BRL,
+    AMPLITUDE, VOLATILIDADE, RANKING, VARIACAO_24H, DATA_ATUALIZACAO
+) VALUES (
+    :id_moeda, :simbolo, :nome, :preco_usd, :preco_brl,
+    :amplitude, :volatilidade, :ranking, :variacao_24h, :data_atualizacao
+)
+"""
+    
+    conexao = obter_conexao()
+    if conexao:
+        try:
+            cursor = conexao.cursor()
+            for moeda in moedas_tratadas:
+                cursor.execute(sql, moeda)
+            conexao.commit()
+            print(f"Moedas inseridas com sucesso! Moedas inseridas: {len(moedas_tratadas)}")
+        except oracledb.Error as e:
+            conexao.rollback()
+            print(f"Erro ao inserir moedas. Erro: {e}")
+        finally:
+            conexao.close()
+    
+
 criar_tabela()
 moedas = buscar_moedas()
 cotacao = buscar_cotacao_dolar()
 resultado = transformar_moeda(cotacao,moedas)
-print(resultado[0])
+inserir_moedas(resultado)
