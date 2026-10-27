@@ -1,4 +1,5 @@
 import requests
+from datetime import datetime
 
 URL_BASE = "https://api.coingecko.com/api/v3"
 
@@ -69,6 +70,9 @@ def transformar_moeda(cotacao,moedas):
         preco_brl = round(preco_usd * cotacao,2)
         maxima = moeda["high_24h"]
         minima = moeda["low_24h"]
+        ranking = moeda["market_cap_rank"]
+        variacao_24h = moeda["price_change_percentage_24h"]
+        data_atualizacao = datetime.strptime( moeda["last_updated"], "%Y-%m-%dT%H:%M:%S.%fZ")
         if minima is None or maxima is None or minima == 0:
             amplitude = None
             volatilidade = None
@@ -82,7 +86,9 @@ def transformar_moeda(cotacao,moedas):
                 volatilidade = "ALTA"
         moeda_tratada = {"id_moeda": id_moeda, "simbolo": simbolo, "nome": nome,
                          "preco_usd": preco_usd, "preco_brl": preco_brl,
-                         "amplitude": amplitude, "volatilidade": volatilidade}
+                         "amplitude": amplitude, "volatilidade": volatilidade,
+                         "ranking": ranking, "variacao_24h": variacao_24h,
+                         "data_atualizacao": data_atualizacao}
         moedas_tratadas.append(moeda_tratada)
     return moedas_tratadas
 
