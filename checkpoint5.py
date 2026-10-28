@@ -160,10 +160,18 @@ INSERT INTO COTACOES_CRIPTO (
             print(f"Erro ao inserir moedas. Erro: {e}")
         finally:
             conexao.close()
-    
 
-criar_tabela()
-moedas = buscar_moedas()
-cotacao = buscar_cotacao_dolar()
-resultado = transformar_moeda(cotacao,moedas)
-inserir_moedas(resultado)
+    
+def main():
+    criar_tabela()
+    moedas = buscar_moedas()
+    cotacao = buscar_cotacao_dolar()
+    if moedas is None or cotacao is None:
+        print("Não foi possível obter os dados da API. Encerrando.")
+        return None
+    resultado = transformar_moeda(cotacao,moedas)
+    inserir_moedas(resultado)
+
+
+if __name__ == "__main__":
+    main()
